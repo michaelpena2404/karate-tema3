@@ -49,4 +49,35 @@ Feature: Pokemon API Test
         * def sortedMoves = bubbleSort(moveNames)
         * print sortedMoves
 
-    
+    @evolutionChain
+    Scenario: Get Evolution Chain of a Pokemon
+        * def namePokemon = 'squirtle'
+        Given path 'pokemon/', namePokemon
+        When method Get
+        Then status 200
+        * def speciesUrl = response.species.url
+        * print speciesUrl
+
+        Given url speciesUrl
+        When method Get
+        Then status 200
+        * def evolutionChainUrl = response.evolution_chain.url
+        * print evolutionChainUrl
+
+        Given url evolutionChainUrl
+        When method Get
+        Then status 200
+        * def evolutionResponse = response
+        
+        * def nameBaseEvolution = evolutionResponse.chain.species.name
+        * print nameBaseEvolution
+        * def nameEvoulionOne = evolutionResponse.chain.evolves_to[0].species.name
+        * print nameEvoulionOne
+        * def nameEvoulionTwo = evolutionResponse.chain.evolves_to[0].evolves_to[0].species.name
+        * print nameEvoulionTwo
+
+        * match nameBaseEvolution == 'squirtle'
+        * match nameEvoulionOne == 'wartortle'
+        * match nameEvoulionTwo == 'blastoise'
+
+      
